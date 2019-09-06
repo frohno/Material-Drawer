@@ -129,6 +129,13 @@ public class MaterialDrawer extends VBox {
      */
     private final StyleableIntegerProperty numRows = new SimpleStyleableIntegerProperty(StyleableProperties.NUM_ROWS);
 
+    public final StyleableIntegerProperty numRowsProperty() {
+        return numRows;
+    }
+
+    public final void setnumRows(int rows) {
+        this.numRows.set(rows);
+    }
     /**
      * The CssMetaData for the stylable properties
      */
