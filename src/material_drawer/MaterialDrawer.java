@@ -5,21 +5,18 @@
  */
 package material_drawer;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import javafx.animation.TranslateTransition;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.css.*;
+import javafx.scene.layout.*;
 import javafx.util.Duration;
+
+import java.util.*;
 
 /**
  *
  * @author Oliver
  */
+@SuppressWarnings({"DanglingJavadoc", "WeakerAccess"})
 public class MaterialDrawer extends VBox {
 
     /**
@@ -28,47 +25,26 @@ public class MaterialDrawer extends VBox {
      * Their index represents their order from top to bottom in the drawer
      * entries.
      */
+    @SuppressWarnings("unchecked" )
     private Map<Integer, IMenuAddable> entries = new HashMap(10);
-
-    /**
-     * The total width of the drawer.
-     */
-    private double totalWidth = 200;
-
-    /**
-     * The visible width of the drawer when unfocused.
-     */
-    private double minimizedWidth = 60;
-
-    /**
-     * The time it takes to do a transition in milliseconds.
-     * <p>
-     * See
-     * {@link javafx.animation.TranslateTransition#TranslateTransition(Duration, Node)}
-     */
-    private double transitionTime = 500;
 
     private TranslateTransition translateTransition;
 
     private GridPane gridPane;
 
-    private int numRows = 10;
-
     public MaterialDrawer() {
         super();
-        this.setPrefWidth(totalWidth);
-        this.setLayoutX(minimizedWidth - totalWidth);
+        this.setPrefWidth(totalWidth.intValue());
+        this.setLayoutX(minimizedWidth.intValue() - totalWidth.intValue());
         this.setLayoutY(0);
 
         //Size
-        this.parentProperty().addListener((a1, b2, c3) -> {
-            this.prefHeightProperty().bind(((Pane) c3).heightProperty());
-        });
+        this.parentProperty().addListener((a1, b2, c3) -> this.prefHeightProperty().bind(((Pane) c3).heightProperty()));
 
         //Animation
-        translateTransition = new TranslateTransition(Duration.millis(transitionTime), this);
+        translateTransition = new TranslateTransition(Duration.millis(transitionTime.doubleValue()), this);
         translateTransition.setFromX(0);
-        translateTransition.setToX(totalWidth - minimizedWidth);
+        translateTransition.setToX(totalWidth.intValue() - minimizedWidth.intValue());
         this.setOnMouseEntered(evt -> {
             translateTransition.setRate(1);
             translateTransition.play();
@@ -87,12 +63,12 @@ public class MaterialDrawer extends VBox {
     private void populateDrawerMenu(IMenuAddable... entries) {
         gridPane = new GridPane();
 
-        gridPane.getColumnConstraints().add(new ColumnConstraints(totalWidth - minimizedWidth));
-        gridPane.getColumnConstraints().add(new ColumnConstraints(minimizedWidth));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(totalWidth.intValue() - minimizedWidth.intValue()));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(minimizedWidth.intValue()));
 
-        for (int i = 0; i < numRows; i++) {
+        for (int i = 0; i < numRows.intValue(); i++) {
             RowConstraints rowContraints = new RowConstraints();
-            rowContraints.setPercentHeight(100.0 / numRows);
+            rowContraints.setPercentHeight(100.0 / numRows.intValue());
             gridPane.getRowConstraints().add(rowContraints);
         }
 
@@ -102,4 +78,119 @@ public class MaterialDrawer extends VBox {
             gridPane.add(entry.getIconNode(), 1, row);
         }
     }
+
+    /***************************************************************************
+     *                                                                         *
+     * styleable Properties                                                    *
+     *                                                                         *
+     **************************************************************************/
+    /**
+     * Width when the drawer is extended
+     */
+    private final StyleableIntegerProperty totalWidth = new SimpleStyleableIntegerProperty(StyleableProperties.TOTAL_WIDTH);
+
+    public final StyleableIntegerProperty totalWidthProperty() {
+        return totalWidth;
+    }
+
+    public final void setTotalWidth(int width) {
+        this.totalWidth.set(width);
+    }
+
+
+    /**
+     * Width when the drawer is retracted
+     */
+    private final StyleableIntegerProperty minimizedWidth = new SimpleStyleableIntegerProperty(StyleableProperties.MINIMIZED_WIDTH);
+
+    public final StyleableIntegerProperty minimizedWidthProperty() {
+        return minimizedWidth;
+    }
+
+    public final void setminimizedWidth(int width) {
+        this.minimizedWidth.set(width);
+    }
+
+    /**
+     * Animation time in milliseconds
+     */
+    private final StyleableDoubleProperty transitionTime = new SimpleStyleableDoubleProperty(StyleableProperties.TRANSITION_TIME);
+
+    public final StyleableDoubleProperty transitionTimeProperty() {
+        return transitionTime;
+    }
+
+    public final void settransitionTime(int time) {
+        this.transitionTime.set(time);
+    }
+
+    /**
+     * The number of rows in the drawer
+     */
+    private final StyleableIntegerProperty numRows = new SimpleStyleableIntegerProperty(StyleableProperties.NUM_ROWS);
+
+    /**
+     * The CssMetaData for the stylable properties
+     */
+    private static class StyleableProperties {
+        private static final CssMetaData<MaterialDrawer, Number> TOTAL_WIDTH = new CssMetaData<MaterialDrawer, Number>("-ffx-total-width", StyleConverter.getSizeConverter(), 200) {
+            @Override
+            public boolean isSettable(MaterialDrawer styleable) {
+                return styleable.totalWidth == null || !styleable.totalWidth.isBound();
+            }
+
+            @Override
+            public StyleableIntegerProperty getStyleableProperty(MaterialDrawer styleable) {
+                return styleable.totalWidthProperty();
+            }
+        };
+        private static final CssMetaData<MaterialDrawer, Number> MINIMIZED_WIDTH = new CssMetaData<MaterialDrawer, Number>("-ffx-minimized-width", StyleConverter.getSizeConverter(), 60) {
+            @Override
+            public boolean isSettable(MaterialDrawer styleable) {
+                return styleable.minimizedWidth == null || !styleable.minimizedWidth.isBound();
+            }
+
+            @Override
+            public StyleableProperty<Number> getStyleableProperty(MaterialDrawer styleable) {
+                return styleable.minimizedWidth;
+            }
+        };
+        private static final CssMetaData<MaterialDrawer, Number> TRANSITION_TIME = new CssMetaData<MaterialDrawer, Number>("-ffx-transition-time", StyleConverter.getSizeConverter(), 500d) {
+
+            @Override
+            public boolean isSettable(MaterialDrawer styleable) {
+                return styleable.transitionTime == null || !styleable.transitionTime.isBound();
+            }
+
+            @Override
+            public StyleableDoubleProperty getStyleableProperty(MaterialDrawer styleable) {
+                return styleable.transitionTime;
+            }
+        };
+        private static final CssMetaData<MaterialDrawer, Number> NUM_ROWS = new CssMetaData<MaterialDrawer, Number>("-ffx-num-width", StyleConverter.getSizeConverter(), 10) {
+            @Override
+            public boolean isSettable(MaterialDrawer styleable) {
+                return styleable.numRows == null || !styleable.numRows.isBound();
+            }
+
+            @Override
+            public StyleableProperty<Number> getStyleableProperty(MaterialDrawer styleable) {
+                return styleable.numRows;
+            }
+        };
+
+        private static final List<CssMetaData<? extends Styleable, ?>> CHILD_STYLEABLES;
+
+        static {
+            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(VBox.getClassCssMetaData());
+            Collections.addAll(styleables, TOTAL_WIDTH, MINIMIZED_WIDTH, TRANSITION_TIME, NUM_ROWS);
+            CHILD_STYLEABLES = Collections.unmodifiableList(styleables);
+        }
+    }
+
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return StyleableProperties.CHILD_STYLEABLES;
+    }
 }
+
+
