@@ -46,26 +46,29 @@ public class MaterialDrawer extends VBox {
      * See
      * {@link javafx.animation.TranslateTransition#TranslateTransition(Duration, Node)}
      */
-    private double transitionTime;
+    private double transitionTime = 500;
 
     private TranslateTransition translateTransition;
 
     private GridPane gridPane;
 
-    private final int numColumns = 2;
     private int numRows = 10;
 
     public MaterialDrawer() {
+        super();
+        this.setPrefWidth(totalWidth);
+        this.setLayoutX(minimizedWidth - totalWidth);
+        this.setLayoutY(0);
+
         //Size
-        if ((this.getParent() instanceof Pane)) {
-            ((Pane) this.getParent()).heightProperty().addListener((a, b, c) -> this.setHeight(c.doubleValue()));
-        }
-        this.setWidth(totalWidth);
+        this.parentProperty().addListener((a1, b2, c3) -> {
+            this.prefHeightProperty().bind(((Pane) c3).heightProperty());
+        });
 
         //Animation
         translateTransition = new TranslateTransition(Duration.millis(transitionTime), this);
-        translateTransition.setFromX(minimizedWidth - totalWidth);
-        translateTransition.setToX(0);
+        translateTransition.setFromX(0);
+        translateTransition.setToX(totalWidth - minimizedWidth);
         this.setOnMouseEntered(evt -> {
             translateTransition.setRate(1);
             translateTransition.play();
@@ -74,6 +77,9 @@ public class MaterialDrawer extends VBox {
             translateTransition.setRate(-1);
             translateTransition.play();
         });
+
+        //Default styling
+        this.setStyle("-fx-background-color: slateblue");
 
         populateDrawerMenu();
     }
