@@ -6,6 +6,7 @@
 package material_drawer;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 
 /**
  *
@@ -13,14 +14,60 @@ import javafx.scene.Node;
  */
 public class MenuEntry implements IMenuAddable {
 
+    private Button labelButton;
+    private Button iconButton;
+    private Runnable onClickRunnable;
+    private String labelString;
+    private Node iconGraphicsNode;
+
+    public MenuEntry(Runnable onClickRunnable, String labelString, Node iconGraphicsNode) {
+        this.onClickRunnable = onClickRunnable;
+        this.labelString = labelString;
+        this.iconGraphicsNode = iconGraphicsNode;
+
+        this.labelButton = new Button(labelString);
+        this.iconButton = new Button("", iconGraphicsNode);
+
+        this.labelButton.setOnAction((e) -> onClickRunnable.run());
+        this.iconButton.setOnAction((e) -> onClickRunnable.run());
+    }
+
     @Override
     public Node getLabelNode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.labelButton;
     }
 
     @Override
     public Node getIconNode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.iconButton;
+    }
+
+    public Runnable getOnClickRunnable() {
+        return this.onClickRunnable;
+    }
+
+    public void setOnClickRunnable(Runnable onClickRunnable) {
+        this.onClickRunnable = onClickRunnable;
+        this.labelButton.setOnAction((e) -> onClickRunnable.run());
+        this.iconButton.setOnAction((e) -> onClickRunnable.run());
+    }
+
+    public String getLabelString() {
+        return this.labelString;
+    }
+
+    public void setLabelString(String labelString) {
+        this.labelString = labelString;
+        this.labelButton.setText(labelString);
+    }
+
+    public Node getIconGraphicsNode() {
+        return this.iconGraphicsNode;
+    }
+
+    public void setIconGraphicsNode(Node iconGraphicsNode) {
+        this.iconGraphicsNode = iconGraphicsNode;
+        this.iconButton.setGraphic(iconGraphicsNode);
     }
 
 }

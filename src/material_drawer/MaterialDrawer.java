@@ -5,12 +5,11 @@
  */
 package material_drawer;
 
+import java.util.*;
 import javafx.animation.TranslateTransition;
 import javafx.css.*;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
-
-import java.util.*;
 
 /**
  *
@@ -25,32 +24,28 @@ public class MaterialDrawer extends VBox {
      * Their index represents their order from top to bottom in the drawer
      * entries.
      */
-    @SuppressWarnings("unchecked" )
+    @SuppressWarnings("unchecked")
     private Map<Integer, IMenuAddable> entries = new HashMap(10);
 
     private TranslateTransition translateTransition;
 
     private GridPane gridPane;
 
-
     /**
-     * Initialize the drawer with default parameters
-     * totalWidth: 200
-     * minimizedWidth: 60
-     * transitionTime: 500
+     * Initialize the drawer with default parameters totalWidth: 200
+     * minimizedWidth: 60 transitionTime: 500
      */
     public MaterialDrawer() {
-        super();
-
-        initialize();
+        this(60, 200, 500);
     }
 
     /**
      * Initialize the drawer with custom parameters
      *
      * @param minimizedWidth is the width when the drawer is minimized
-     * @param totalWidth     is the width when the drawer is fully extended
-     * @param transitionTime is the transition time of the animations of the drawer
+     * @param totalWidth is the width when the drawer is fully extended
+     * @param transitionTime is the transition time of the animations of the
+     * drawer
      */
     public MaterialDrawer(int minimizedWidth, int totalWidth, double transitionTime) {
         super();
@@ -65,30 +60,32 @@ public class MaterialDrawer extends VBox {
     private void initialize() {
         //Size
         this.setPrefWidth(this.totalWidth.intValue());
-        this.setLayoutX(this.minimizedWidth.intValue() - this.totalWidth.intValue());
 
         //Location
         this.setLayoutY(0);
+        this.setLayoutX(this.minimizedWidth.intValue() - this.totalWidth.intValue());
 
         //Height
         this.parentProperty().addListener((a1, b2, c3) -> this.prefHeightProperty().bind(((Pane) c3).heightProperty()));
 
         //Animation
         translateTransition = new TranslateTransition(Duration.millis(this.transitionTime.doubleValue()), this);
+
         translateTransition.setFromX(0);
         translateTransition.setToX(this.totalWidth.intValue() - this.minimizedWidth.intValue());
+
         this.setOnMouseEntered(evt -> {
             translateTransition.setRate(1);
             translateTransition.play();
         });
+
         this.setOnMouseExited(evt -> {
             translateTransition.setRate(-1);
             translateTransition.play();
         });
 
         //Default styling
-        this.setStyle("-fx-background-color: slateblue");
-
+        this.setStyle("-fx-background-color: slateblue; -fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);");
         populateDrawerMenu();
     }
 
@@ -111,19 +108,19 @@ public class MaterialDrawer extends VBox {
         }
     }
 
-    /***************************************************************************
+    /**
+     * *************************************************************************
      *                                                                         *
-     * styleable Properties                                                    *
-     *                                                                         *
-     **************************************************************************/
+     * styleable Properties * *
+     * ************************************************************************
+     */
     /**
      * Width when the drawer is extended
      */
     private final StyleableIntegerProperty totalWidth = new SimpleStyleableIntegerProperty(StyleableProperties.TOTAL_WIDTH);
 
     /**
-     * This is the width when the drawer is fully extended
-     * Basically a getter
+     * This is the width when the drawer is fully extended Basically a getter
      *
      * @return a stylable property dictating the width of the drawer
      */
@@ -144,16 +141,16 @@ public class MaterialDrawer extends VBox {
         //TODO Add support for updating the gridpane
     }
 
-
     /**
      * Width when the drawer is retracted
      */
     private final StyleableIntegerProperty minimizedWidth = new SimpleStyleableIntegerProperty(StyleableProperties.MINIMIZED_WIDTH);
 
     /**
-     * This is the width when the drawer is minimized
-     * Basically a getter
-     * @return an integer property dictating the width of the drawer when retracted
+     * This is the width when the drawer is minimized Basically a getter
+     *
+     * @return an integer property dictating the width of the drawer when
+     * retracted
      */
     public final StyleableIntegerProperty minimizedWidthProperty() {
         return minimizedWidth;
@@ -187,11 +184,14 @@ public class MaterialDrawer extends VBox {
 
     public final void setNumRows(int rows) {
         this.numRows.set(rows);
+
     }
+
     /**
      * The CssMetaData for the stylable properties
      */
     private static class StyleableProperties {
+
         private static final CssMetaData<MaterialDrawer, Number> TOTAL_WIDTH = new CssMetaData<MaterialDrawer, Number>("-ffx-total-width", StyleConverter.getSizeConverter(), 200) {
             @Override
             public boolean isSettable(MaterialDrawer styleable) {
@@ -251,5 +251,3 @@ public class MaterialDrawer extends VBox {
         return StyleableProperties.CHILD_STYLEABLES;
     }
 }
-
-
