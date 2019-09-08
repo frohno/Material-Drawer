@@ -14,7 +14,7 @@ import java.util.*;
 
 /**
  *
- * @author Oliver
+ * @author Oliver & Frederik
  */
 @SuppressWarnings({"DanglingJavadoc", "WeakerAccess"})
 public class MaterialDrawer extends VBox {
@@ -32,19 +32,51 @@ public class MaterialDrawer extends VBox {
 
     private GridPane gridPane;
 
+
+    /**
+     * Initialize the drawer with default parameters
+     * totalWidth: 200
+     * minimizedWidth: 60
+     * transitionTime: 500
+     */
     public MaterialDrawer() {
         super();
-        this.setPrefWidth(totalWidth.intValue());
-        this.setLayoutX(minimizedWidth.intValue() - totalWidth.intValue());
+
+        initialize();
+    }
+
+    /**
+     * Initialize the drawer with custom parameters
+     *
+     * @param minimizedWidth is the width when the drawer is minimized
+     * @param totalWidth     is the width when the drawer is fully extended
+     * @param transitionTime is the transition time of the animations of the drawer
+     */
+    public MaterialDrawer(int minimizedWidth, int totalWidth, double transitionTime) {
+        super();
+
+        this.minimizedWidth.set(minimizedWidth);
+        this.totalWidth.set(totalWidth);
+        this.transitionTime.set(transitionTime);
+
+        initialize();
+    }
+
+    private void initialize() {
+        //Size
+        this.setPrefWidth(this.totalWidth.intValue());
+        this.setLayoutX(this.minimizedWidth.intValue() - this.totalWidth.intValue());
+
+        //Location
         this.setLayoutY(0);
 
-        //Size
+        //Height
         this.parentProperty().addListener((a1, b2, c3) -> this.prefHeightProperty().bind(((Pane) c3).heightProperty()));
 
         //Animation
-        translateTransition = new TranslateTransition(Duration.millis(transitionTime.doubleValue()), this);
+        translateTransition = new TranslateTransition(Duration.millis(this.transitionTime.doubleValue()), this);
         translateTransition.setFromX(0);
-        translateTransition.setToX(totalWidth.intValue() - minimizedWidth.intValue());
+        translateTransition.setToX(this.totalWidth.intValue() - this.minimizedWidth.intValue());
         this.setOnMouseEntered(evt -> {
             translateTransition.setRate(1);
             translateTransition.play();
@@ -89,12 +121,27 @@ public class MaterialDrawer extends VBox {
      */
     private final StyleableIntegerProperty totalWidth = new SimpleStyleableIntegerProperty(StyleableProperties.TOTAL_WIDTH);
 
+    /**
+     * This is the width when the drawer is fully extended
+     * Basically a getter
+     *
+     * @return a stylable property dictating the width of the drawer
+     */
     public final StyleableIntegerProperty totalWidthProperty() {
         return totalWidth;
     }
 
+    /**
+     * This is the width when the drawer is fully extended
+     */
     public final void setTotalWidth(int width) {
         this.totalWidth.set(width);
+        /**
+         * Update animation
+         */
+        this.setLayoutX(this.minimizedWidth.intValue() - this.totalWidth.intValue());
+        translateTransition.setToX(this.totalWidth.intValue() - this.minimizedWidth.intValue());
+        //TODO Add support for updating the gridpane
     }
 
 
@@ -103,11 +150,16 @@ public class MaterialDrawer extends VBox {
      */
     private final StyleableIntegerProperty minimizedWidth = new SimpleStyleableIntegerProperty(StyleableProperties.MINIMIZED_WIDTH);
 
+    /**
+     * This is the width when the drawer is minimized
+     * Basically a getter
+     * @return an integer property dictating the width of the drawer when retracted
+     */
     public final StyleableIntegerProperty minimizedWidthProperty() {
         return minimizedWidth;
     }
 
-    public final void setminimizedWidth(int width) {
+    public final void setMinimizedWidth(int width) {
         this.minimizedWidth.set(width);
     }
 
@@ -120,7 +172,7 @@ public class MaterialDrawer extends VBox {
         return transitionTime;
     }
 
-    public final void settransitionTime(int time) {
+    public final void setTransitionTime(int time) {
         this.transitionTime.set(time);
     }
 
@@ -133,7 +185,7 @@ public class MaterialDrawer extends VBox {
         return numRows;
     }
 
-    public final void setnumRows(int rows) {
+    public final void setNumRows(int rows) {
         this.numRows.set(rows);
     }
     /**
