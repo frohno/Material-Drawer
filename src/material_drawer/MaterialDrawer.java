@@ -34,9 +34,11 @@ public class MaterialDrawer extends VBox {
     /**
      * Initialize the drawer with default parameters totalWidth: 200
      * minimizedWidth: 60 transitionTime: 500
+     *
+     * @param entries
      */
-    public MaterialDrawer() {
-        this(60, 200, 500);
+    public MaterialDrawer(IMenuAddable... entries) {
+        this(60, 200, 500, entries);
     }
 
     /**
@@ -46,15 +48,18 @@ public class MaterialDrawer extends VBox {
      * @param totalWidth is the width when the drawer is fully extended
      * @param transitionTime is the transition time of the animations of the
      * drawer
+     * @param entries
      */
-    public MaterialDrawer(int minimizedWidth, int totalWidth, double transitionTime) {
+    public MaterialDrawer(int minimizedWidth, int totalWidth, double transitionTime, IMenuAddable... entries) {
         super();
 
         this.minimizedWidth.set(minimizedWidth);
         this.totalWidth.set(totalWidth);
         this.transitionTime.set(transitionTime);
+        this.numRows.set(10);
 
         initialize();
+        populateDrawerMenu(entries);
     }
 
     private void initialize() {
@@ -66,7 +71,10 @@ public class MaterialDrawer extends VBox {
         this.setLayoutX(this.minimizedWidth.intValue() - this.totalWidth.intValue());
 
         //Height
-        this.parentProperty().addListener((a1, b2, c3) -> this.prefHeightProperty().bind(((Pane) c3).heightProperty()));
+        this.parentProperty().addListener((a1, b2, c3) -> {
+            this.prefHeightProperty().bind(((Pane) c3).heightProperty());
+            this.gridPane.prefHeightProperty().bind(((Pane) c3).heightProperty());
+        });
 
         //Animation
         translateTransition = new TranslateTransition(Duration.millis(this.transitionTime.doubleValue()), this);
@@ -86,12 +94,12 @@ public class MaterialDrawer extends VBox {
 
         //Default styling
         this.setStyle("-fx-background-color: slateblue; -fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);");
-        populateDrawerMenu();
+
     }
 
     private void populateDrawerMenu(IMenuAddable... entries) {
         gridPane = new GridPane();
-
+        gridPane.setPrefWidth(totalWidth.intValue());
         gridPane.getColumnConstraints().add(new ColumnConstraints(totalWidth.intValue() - minimizedWidth.intValue()));
         gridPane.getColumnConstraints().add(new ColumnConstraints(minimizedWidth.intValue()));
 

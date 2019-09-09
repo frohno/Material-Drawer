@@ -30,6 +30,9 @@ public class MenuEntry implements IMenuAddable {
 
         this.labelButton.setOnAction((e) -> onClickRunnable.run());
         this.iconButton.setOnAction((e) -> onClickRunnable.run());
+
+        //Default size (@TODO DO CSS WIZARDRY HERE FRHOU18)
+        labelButton.setStyle("-fx-font-size: 25; -fx-font-color: white");
     }
 
     @Override
