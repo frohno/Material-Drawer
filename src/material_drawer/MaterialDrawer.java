@@ -100,6 +100,8 @@ public class MaterialDrawer extends VBox {
     private void populateDrawerMenu(IMenuAddable... entries) {
         gridPane = new GridPane();
         gridPane.setPrefWidth(totalWidth.intValue());
+        gridPane.resizeRelocate(0,0, totalWidth.intValue(),200);
+
         gridPane.getColumnConstraints().add(new ColumnConstraints(totalWidth.intValue() - minimizedWidth.intValue()));
         gridPane.getColumnConstraints().add(new ColumnConstraints(minimizedWidth.intValue()));
 
