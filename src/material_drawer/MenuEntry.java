@@ -27,6 +27,10 @@ public class MenuEntry implements IMenuAddable {
 
         this.labelButton = new Button(labelString);
         this.iconButton = new Button("", iconGraphicsNode);
+        labelButton.setPrefSize(20, 20);
+        labelButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        iconButton.setPrefSize(20, 20);
+        iconButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         this.labelButton.setOnAction((e) -> onClickRunnable.run());
         this.iconButton.setOnAction((e) -> onClickRunnable.run());

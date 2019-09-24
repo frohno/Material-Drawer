@@ -29,7 +29,7 @@ public class MaterialDrawer extends VBox {
 
     private TranslateTransition translateTransition;
 
-    private GridPane gridPane;
+    private GridPane gridPane = new GridPane();
 
     /**
      * Initialize the drawer with default parameters totalWidth: 200
@@ -73,7 +73,11 @@ public class MaterialDrawer extends VBox {
         //Height
         this.parentProperty().addListener((a1, b2, c3) -> {
             this.prefHeightProperty().bind(((Pane) c3).heightProperty());
-            this.gridPane.prefHeightProperty().bind(((Pane) c3).heightProperty());
+        });
+
+        this.heightProperty().addListener((a, b, c) -> {
+            gridPane.setPrefHeight(getHeight());
+            gridPane.resize(getWidth(), getHeight());
         });
 
         //Animation
@@ -100,28 +104,30 @@ public class MaterialDrawer extends VBox {
     private void populateDrawerMenu(IMenuAddable... entries) {
         gridPane = new GridPane();
         gridPane.setPrefWidth(totalWidth.intValue());
-        gridPane.resizeRelocate(0,0, totalWidth.intValue(),200);
-
+        gridPane.setMaxSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
         gridPane.getColumnConstraints().add(new ColumnConstraints(totalWidth.intValue() - minimizedWidth.intValue()));
         gridPane.getColumnConstraints().add(new ColumnConstraints(minimizedWidth.intValue()));
 
-        for (int i = 0; i < numRows.intValue(); i++) {
+        for (IMenuAddable entry : entries) {
             RowConstraints rowContraints = new RowConstraints();
             rowContraints.setPercentHeight(100.0 / numRows.intValue());
             gridPane.getRowConstraints().add(rowContraints);
-        }
-
-        for (IMenuAddable entry : entries) {
             int row = Arrays.asList(entries).indexOf(entry);
+
             gridPane.add(entry.getLabelNode(), 0, row);
+            GridPane.setFillWidth(entry.getLabelNode(), true);
+            GridPane.setFillHeight(entry.getLabelNode(), true);
             gridPane.add(entry.getIconNode(), 1, row);
+            GridPane.setFillWidth(entry.getIconNode(), true);
+            GridPane.setFillHeight(entry.getIconNode(), true);
         }
+        this.getChildren().add(gridPane);
     }
 
     /**
      * *************************************************************************
      *                                                                         *
-     * styleable Properties * *
+     * Styleable Properties * *
      * ************************************************************************
      */
     /**
